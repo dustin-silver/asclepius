@@ -11,4 +11,4 @@ services:
       - "443:443"
     volumes:
       - $PWD/Caddyfile:/etc/caddy/Caddyfile:z
-      - $PWD/static:/var/www/html:z
+      - $PWD/docs:/var/www/html:z
