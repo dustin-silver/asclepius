@@ -1,0 +1,9 @@
+localhost {
+	encode gzip
+	templates
+	handle * {
+		root * /var/www/html
+		try_files {path} index.html
+		file_server
+	}
+}

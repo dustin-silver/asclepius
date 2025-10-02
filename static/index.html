@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="main.js"></script>
+        <style>
+            .check_pos input {
+                position: absolute;
+                width: 0;
+            }
+            .check_pos:has(input:checked)::after {
+                content: "+";
+            }
+            .check_pos::after {
+                content: "-";
+            }
+            .check_pos {
+                display: inline-block;
+                text-align: center;
+                width: 20px;
+                height: 19px;
+                border: gray 1px solid;
+                background-color: #e9e9ed;
+                border-radius: 4px;
+                line-height: 17px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="form_type">
+            <div>
+                <label>
+                    Donor
+                    <select id="select_type_donor">
+                        <option value="a">A</option>
+                        <option value="b">B</option>
+                        <option value="ab">AB</option>
+                        <option value="o">O</option>
+                    </select>
+                </label>
+                <label class="check_pos">
+                    <input id="check_pos_donor" type="checkbox" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Recipient
+                    <select id="select_type_recipient">
+                        <option value="a">A</option>
+                        <option value="b">B</option>
+                        <option value="ab">AB</option>
+                        <option value="o">O</option>
+                    </select>
+                </label>
+                <label class="check_pos">
+                    <input id="check_pos_recipient" type="checkbox" />
+                </label>
+            </div>
+        </form>
+        <div>ABO Incompatibility</div>
+        <div id="result"></div>
+    </body>
+</html>
