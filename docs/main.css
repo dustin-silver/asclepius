@@ -13,6 +13,7 @@
 }
 .table_row span {
     display: table-cell;
+    padding: 2px;
 }
 .check_rh input {
     position: absolute;
@@ -33,4 +34,13 @@
     background-color: #e9e9ed;
     border-radius: 4px;
     line-height: 17px;
+}
+.add_row {
+    display: inline-block;
+    background-color: #e9e9ed;
+    border: gray 1px solid;
+    border-radius: 4px;
+    padding: 2px;
+    cursor: default;
+    margin: 2px;
 }
