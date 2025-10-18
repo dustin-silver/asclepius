@@ -1,0 +1,17 @@
+[
+  {
+    "label": "compose up",
+    "command": "podman compose up",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus"
+  },
+  {
+    "label": "compose down",
+    "command": "podman compose down",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus",
+    "hide": "on_success"
+  }
+]

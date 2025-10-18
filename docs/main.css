@@ -1,20 +1,3 @@
-.table_header {
-    display: table-header-group;
-}
-.table_header span {
-    display: table-cell;
-    width: 200px;
-}
-.table_row_group {
-    display: table-row-group;
-}
-.table_row {
-    display: table-row;
-}
-.table_row span {
-    display: table-cell;
-    padding: 2px;
-}
 .check_rh input {
     position: absolute;
     width: 0;
@@ -34,13 +17,4 @@
     background-color: #e9e9ed;
     border-radius: 4px;
     line-height: 17px;
-}
-.add_row {
-    display: inline-block;
-    background-color: #e9e9ed;
-    border: gray 1px solid;
-    border-radius: 4px;
-    padding: 2px;
-    cursor: default;
-    margin: 2px;
 }
