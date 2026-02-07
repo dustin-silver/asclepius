@@ -1,9 +1,17 @@
 <!doctype html>
-<html>
+<hhtml>
     <head>
-        <script src="https://redom.js.org/redom.min.js"></script>
-        <script src="main.js"></script>
-        <link rel="stylesheet" href="main.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "redom": "https://redom.js.org/redom.es.min.js",
+                    "app": "/js/app/app.js"
+                }
+            }
+        </script>
+        <script src="/js/main.js" type="module"></script>
+        <link rel="stylesheet" href="/css/main.css" />
+        <link rel="stylesheet" href="/css/abo.css" />
     </head>
     <body></body>
-</html>
+</hhtml>

@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-flow: column;
+}
+#app {
+    margin: 5px;
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+}
+#menu {
+    display: flex;
+    flex-flow: row;
+}
+#menu span {
+    background-color: lightgray;
+    padding: 0 5px;
+    cursor: pointer;
+    border: solid black 1px;
+    border-left-width: 0;
+}
+#menu span:hover {
+    background-color: white;
+}
+#menu span.active {
+    background-color: white;
+    border-bottom-width: 0;
+}
+#menu span:first-of-type {
+    border-top-width: 0;
+    cursor: default;
+    background-color: white;
+}
+#menu span:last-of-type {
+    border-top-width: 0;
+    border-right-width: 0;
+    cursor: default;
+    background-color: white;
+    flex: 1;
+}
+#body {
+    border: solid black 1px;
+    border-top-width: 0;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+}
+#body div {
+    flex: 1;
+}
