@@ -28,7 +28,7 @@ class App {
       ])),
       (this.body = el("#body")),
     ]);
-    this.menu.selectMenu("abo");
+    this.menu.selectMenu(window.location.hash.substring(1));
   }
 }
 

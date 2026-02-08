@@ -2,6 +2,7 @@ import { el } from "redom";
 
 class Menu {
   constructor(menus) {
+    this.defaultMenu = menus[0][0].toLowerCase();
     this.menus = [];
     this.callbacks = [];
 
@@ -22,6 +23,10 @@ class Menu {
     this.el = el("#menu", menuObjs);
   }
   selectMenu(menu) {
+    menu = menu.toLowerCase();
+    if (this.menus[menu] == undefined) {
+      menu = this.defaultMenu;
+    }
     for (let m in this.menus) {
       if (m == menu) {
         this.menus[m].className = "active";
@@ -32,6 +37,7 @@ class Menu {
     if (this.callbacks[menu]) {
       this.callbacks[menu]();
     }
+    window.location.hash = `#${menu}`;
   }
 }
 

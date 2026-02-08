@@ -23,7 +23,6 @@ class HH {
       ),
       el(".ferritin", "Ferritin", (this.ferrtin = ferritinSelector())),
       el(".hgb", "HGB", (this.hgb = hgbSelector())),
-      el(".mcv", "MCV", (this.mcv = mcvSelector())),
     ]);
   }
 }
@@ -50,17 +49,21 @@ function genotypeSelector() {
   ]);
 }
 function targetFerritinSelector() {
-  return el(
-    "label.target_ferritin",
-    el("input", { type: "number", min: "20", max: "80" }),
-    "ng/ml",
-  );
+  return el("span.target_ferritin", "50-150 ng/ml");
 }
 function currentIntervalSelector() {
-  return el("input", { type: "number" });
+  return el(
+    "label.current_interval",
+    el("input", { type: "number", min: "0", max: "20" }),
+    "weeks",
+  );
 }
 function actualIntervalSelector() {
-  return el("input", { type: "number" });
+  return el(
+    "label.actual_interval",
+    el("input", { type: "number", min: "0", max: "20" }),
+    "weeks",
+  );
 }
 function ferritinSelector() {
   return el(
@@ -70,10 +73,11 @@ function ferritinSelector() {
   );
 }
 function hgbSelector() {
-  return el("label.hgb", el("input", { type: "number", min: "20", max: "80" }));
-}
-function mcvSelector() {
-  return el("label.mcv", el("input", { type: "number", min: "20", max: "80" }));
+  return el(
+    "label.hgb",
+    el("input", { type: "number", min: "20", max: "80" }),
+    "g/dl",
+  );
 }
 
 export { HH };
