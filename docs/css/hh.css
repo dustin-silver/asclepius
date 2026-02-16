@@ -5,7 +5,8 @@
 .hh .row {
     display: table-row;
 }
-.hh .row .col1 {
+.hh .row .col1,
+.hh .row .row_label {
     display: table-cell;
     text-align: right;
     width: 150px;

@@ -1,51 +1,60 @@
 import { el } from "redom";
+import { SelectRow, NumberInputRow, NumberIncrementInputRow, TextRow, FillRow } from "./library.js";
 
 class HH {
   constructor() {
+    let onchange = () => {
+      this.compute();
+    };
     this.el = el(".hh", [
-      this.ageSelector(),
-      this.sexSelector(),
+      (this.age = new NumberInputRow("Age", 0, 120, 50, "", onchange)),
+      (this.sex = new SelectRow("Sex", ["Man", "Woman"], "", onchange)),
       this.genotypeSelector(),
-      el(".row", [el("span.col1", " "), el("span")]),
-      this.currentPhaseSelector(),
-      this.currentTreatmentSelector(),
-      el(".row", [
-        el("span.col1", "Subjective"),
-        (this.subjective = el("span")),
-      ]),
-      el(".row", [el("span.col1", " "), el("span")]),
-      this.currentIntervalSelector(),
-      this.ferritinSelector(),
-      this.hgbSelector(),
-      el(".row", [el("span.col1", "Objective"), (this.objective = el("span"))]),
-      el(".row", [el("span.col1", " "), el("span")]),
-      this.targetFerritinSelector(),
-      this.actualIntervalSelector(),
-      this.nextSelector(),
-      el(".row", [el("span.col1", "Plan"), (this.plan = el("span.fill"))]),
+      new TextRow("", ""),
+      (this.currentPhase = new SelectRow("Current Phase", ["maintenance", "induction"], "", onchange)),
+      (this.currentTreatment = new SelectRow(
+        "Current Treatment",
+        ["whole blood phlebotomy", "double red cell collection apheresis (DRCA)"],
+        "",
+        onchange,
+      )),
+      (this.subjective = new TextRow("Subjective", "")),
+      new TextRow("", ""),
+      (this.currentInterval = new NumberInputRow("Current Interval", "0", "20", "6", "weeks", onchange)),
+      (this.ferritin = new NumberInputRow("Measured Ferritin", "0", "500", "100", "ng/ml", onchange)),
+      (this.hgb = new NumberIncrementInputRow("HGB", "0", "30", "0.1", "14", "g/dl", onchange)),
+      (this.objective = new TextRow("Objective", "")),
+      new TextRow("", ""),
+      (this.targetFerritin = new TextRow("Target Ferritin")),
+      (this.actualInterval = new NumberInputRow("Actual Interval", "0", "20", "6", "weeks", onchange)),
+      (this.next = new SelectRow("Next", ["Continue", "Schedule"], "", onchange)),
+      (this.plan = new TextRow("Plan", "")),
+      new FillRow(),
     ]);
     this.compute();
   }
   compute() {
-    let age = this.age.value;
-    let sex = this.sex.value;
+    let age = this.age.getValue();
+    let sex = this.sex.getValue();
     let genotype = this.genotype.value;
     if (genotype == "o") {
       genotype = this.genotypeOther;
     }
 
-    let currentPhase = this.currentPhase.value;
-    let currentTreatment = this.currentTreatment.value;
-    this.subjective.innerText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis currently in ${currentPhase} phase of phlebotomy therapy and undergoing ${currentTreatment}.
-Patient denies interval changes: denies arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last phlebotomy.`;
+    let currentPhase = this.currentPhase.getValue();
+    let currentTreatment = this.currentTreatment.getValue();
+    this.subjective.setValue(
+      `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis currently in ${currentPhase} phase of phlebotomy therapy and undergoing ${currentTreatment}.` +
+        `Patient denies interval changes: denies arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last phlebotomy.`,
+    );
 
-    let currentInterval = this.currentInterval.value;
+    let currentInterval = this.currentInterval.getValue();
     let targetFerritin = "50-150 ng/ml";
     if (genotype == "C282Y/C282Y" && age < 65) {
       targetFerritin = "50-75 ng/ml";
     }
-    this.targetFerritin.innerText = targetFerritin;
-    let ferritin = this.ferritin.value;
+    this.targetFerritin.setValue(targetFerritin);
+    let ferritin = this.ferritin.getValue();
     let relative = "within";
     if (ferritin < 50) {
       relative = "below";
@@ -56,40 +65,16 @@ Patient denies interval changes: denies arthralgia, skin discoloration, abdomina
     } else if (ferritin > 150) {
       relative = "above";
     }
-    let hgb = this.hgb.value;
-    this.objective.innerText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`;
+    let hgb = this.hgb.getValue();
+    this.objective.setValue(
+      `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`,
+    );
 
-    let next = this.next.value;
-    let actualInterval = this.actualInterval.value;
-    this.plan.innerText = `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${actualInterval} weeks.`;
-  }
-  ageSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Age"),
-      (this.age = el("input", {
-        type: "number",
-        min: "0",
-        max: "120",
-        value: "50",
-      })),
-    ]);
-    this.age.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  sexSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Sex"),
-      (this.sex = el("select", [
-        el("option", { value: "Man" }, "Man"),
-        el("option", { value: "Woman" }, "Woman"),
-      ])),
-    ]);
-    this.sex.onchange = () => {
-      this.compute();
-    };
-    return ret;
+    let next = this.next.getValue();
+    let actualInterval = this.actualInterval.getValue();
+    this.plan.setValue(
+      `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${actualInterval} weeks.`,
+    );
   }
   genotypeSelector() {
     let ret = el(".row", [
@@ -110,137 +95,6 @@ Patient denies interval changes: denies arthralgia, skin discoloration, abdomina
       } else {
         this.genotypeOther.className = "hidden";
       }
-      this.compute();
-    };
-    return ret;
-  }
-  targetFerritinSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Target Ferritin"),
-      (this.targetFerritin = el("span.target_ferritin", "50-150 ng/ml")),
-    ]);
-    return ret;
-  }
-  currentPhaseSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Phase"),
-      (this.currentPhase = el("select", [
-        el("option", { value: "maintenance" }, "maintenance"),
-        el("option", { value: "induction" }, "induction"),
-      ])),
-    ]);
-    this.currentPhase.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  currentTreatmentSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Treatment"),
-      (this.currentTreatment = el("select", [
-        el(
-          "option",
-          { value: "whole blood phlebotomy" },
-          "whole blood phlebotomy",
-        ),
-        el(
-          "option",
-          { value: "double red cell collection apheresis (DRCA)" },
-          "double red cell collection apheresis (DRCA)",
-        ),
-      ])),
-    ]);
-    this.currentTreatment.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  currentIntervalSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Current Interval"),
-      el(
-        "label.current_interval",
-        (this.currentInterval = el("input", {
-          type: "number",
-          min: "0",
-          max: "20",
-          value: "6",
-        })),
-        "weeks",
-      ),
-    ]);
-    this.currentInterval.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  actualIntervalSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Actual Interval"),
-      el(
-        "label.actual_interval",
-        (this.actualInterval = el("input", {
-          type: "number",
-          min: "0",
-          max: "20",
-          value: "6",
-        })),
-        "weeks",
-      ),
-    ]);
-    this.actualInterval.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  ferritinSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Measured Ferritin"),
-      el(
-        "label.ferritin",
-        (this.ferritin = el("input", {
-          type: "number",
-          min: "0",
-          max: "500",
-          value: "100",
-        })),
-        "ng/ml",
-      ),
-    ]);
-    this.ferritin.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  hgbSelector() {
-    let ret = el(".row", [
-      el("span.col1", "HGB"),
-      el(
-        "label.hgb",
-        (this.hgb = el("input", {
-          type: "number",
-          min: "0",
-          max: "30",
-          step: "0.1",
-          value: "14",
-        })),
-        "g/dl",
-      ),
-    ]);
-    this.hgb.onchange = () => {
-      this.compute();
-    };
-    return ret;
-  }
-  nextSelector() {
-    let ret = el(".row", [
-      el("span.col1", "Next"),
-      (this.next = el("select", [
-        el("option", { value: "Continue" }, "Continue"),
-        el("option", { value: "Schedule" }, "Schedule"),
-      ])),
-    ]);
-    this.next.onchange = () => {
       this.compute();
     };
     return ret;
