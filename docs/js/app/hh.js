@@ -57,7 +57,7 @@ Patient denies interval changes: denies arthralgia, skin discoloration, abdomina
       relative = "above";
     }
     let hgb = this.hgb.value;
-    this.objective.innerText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} and hgb at ${hgb} g/dl.`;
+    this.objective.innerText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`;
 
     let next = this.next.value;
     let actualInterval = this.actualInterval.value;
@@ -240,7 +240,7 @@ Patient denies interval changes: denies arthralgia, skin discoloration, abdomina
         el("option", { value: "Schedule" }, "Schedule"),
       ])),
     ]);
-    this.currentTreatment.onchange = () => {
+    this.next.onchange = () => {
       this.compute();
     };
     return ret;
