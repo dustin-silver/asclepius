@@ -50,3 +50,7 @@ body {
 #body div {
     flex: 1;
 }
+
+.hidden {
+    display: none;
+}

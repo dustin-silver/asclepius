@@ -1,0 +1,23 @@
+.hh {
+    padding: 10px 10px 0 10px;
+    display: table;
+}
+.hh .row {
+    display: table-row;
+}
+.hh .row .col1 {
+    display: table-cell;
+    text-align: right;
+    width: 150px;
+    padding-right: 10px;
+    height: 15px;
+}
+.hh .row .fill {
+    display: table-cell;
+    height: 100%;
+}
+
+.hh .row input,
+.hh .row select {
+    margin-right: 5px;
+}
