@@ -8,13 +8,18 @@ class HH {
     };
     this.el = el(".hh", [
       (this.age = new NumberInputRow("Age", 0, 120, 50, "", onchange)),
-      (this.sex = new SelectRow("Sex", ["Man", "Woman"], "", onchange)),
+      (this.sex = new SelectRow("Sex", ["man", "woman"], "", onchange)),
       this.genotypeSelector(),
       new TextRow("", ""),
-      (this.currentPhase = new SelectRow("Current Phase", ["maintenance", "induction"], "", onchange)),
+      (this.oldInterval = new NumberInputRow("Old Interval", "0", "20", "6", "weeks", onchange)),
       (this.currentTreatment = new SelectRow(
         "Current Treatment",
-        ["whole blood phlebotomy", "double red cell collection apheresis (DRCA)"],
+        [
+          "whole blood allogeneic phlebotomy",
+          "whole blood therapeutic phlebotomy",
+          "whole blood research phlebotomy",
+          "double red cell apheresis (DRCA)",
+        ],
         "",
         onchange,
       )),
@@ -24,9 +29,10 @@ class HH {
       (this.ferritin = new NumberInputRow("Measured Ferritin", "0", "500", "100", "ng/ml", onchange)),
       (this.hgb = new NumberIncrementInputRow("HGB", "0", "30", "0.1", "14", "g/dl", onchange)),
       (this.objective = new TextRow("Objective", "")),
+      (this.assessment = new TextRow("Assessment", "")),
       new TextRow("", ""),
       (this.targetFerritin = new TextRow("Target Ferritin")),
-      (this.actualInterval = new NumberInputRow("Actual Interval", "0", "20", "6", "weeks", onchange)),
+      (this.newInterval = new NumberInputRow("New Interval", "0", "20", "6", "weeks", onchange)),
       (this.next = new SelectRow("Next", ["Continue", "Schedule"], "", onchange)),
       (this.plan = new TextRow("Plan", "")),
       new FillRow(),
@@ -41,11 +47,11 @@ class HH {
       genotype = this.genotypeOther;
     }
 
-    let currentPhase = this.currentPhase.getValue();
+    let oldInterval = this.oldInterval.getValue();
     let currentTreatment = this.currentTreatment.getValue();
     this.subjective.setValue(
-      `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis currently in ${currentPhase} phase of phlebotomy therapy and undergoing ${currentTreatment}.` +
-        `Patient denies interval changes: denies arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last phlebotomy.`,
+      `${age}-year-old ${sex} with ${genotype} hereditary hemochromatosis undergoing ${currentTreatment} Q ${oldInterval} weeks.  ` +
+        `Patient denies interval changes including arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last visit.`,
     );
 
     let currentInterval = this.currentInterval.getValue();
@@ -66,14 +72,14 @@ class HH {
       relative = "above";
     }
     let hgb = this.hgb.getValue();
-    this.objective.setValue(
+    this.assessment.setValue(
       `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`,
     );
 
     let next = this.next.getValue();
-    let actualInterval = this.actualInterval.getValue();
+    let newInterval = this.newInterval.getValue();
     this.plan.setValue(
-      `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${actualInterval} weeks.`,
+      `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${newInterval} weeks.`,
     );
   }
   genotypeSelector() {
