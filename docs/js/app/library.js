@@ -43,9 +43,34 @@ class NumberIncrementInputRow {
   }
 }
 
+class TextInputRow {
+  constructor(label, onchange) {
+    this.el = el(".row", [el("span.row_label", label), (this.input = el("input"))]);
+    this.input.onchange = onchange;
+  }
+  getValue() {
+    return this.input.value;
+  }
+}
+
 class TextRow {
   constructor(label, text) {
     this.el = el(".row", [el("span.row_label", label), (this.text = el("span", text))]);
+  }
+  setValue(text) {
+    this.text.innerText = text;
+  }
+}
+
+async function copyToClipboard(text) {
+  const ci = new ClipboardItem({ ["text/plain"]: text });
+  await navigator.clipboard.write([ci]);
+}
+
+class CopyRow {
+  constructor(text) {
+    this.el = el(".row", [el("span.row_label", "Copy"), (this.text = el("span.copy", text))]);
+    this.text.onclick = () => copyToClipboard(this.text.innerText);
   }
   setValue(text) {
     this.text.innerText = text;
@@ -58,4 +83,4 @@ class FillRow {
   }
 }
 
-export { SelectRow, NumberInputRow, NumberIncrementInputRow, TextRow, FillRow };
+export { SelectRow, NumberInputRow, NumberIncrementInputRow, TextInputRow, TextRow, CopyRow, FillRow };

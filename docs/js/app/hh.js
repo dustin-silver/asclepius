@@ -1,5 +1,13 @@
 import { el } from "redom";
-import { SelectRow, NumberInputRow, NumberIncrementInputRow, TextRow, FillRow } from "./library.js";
+import {
+  SelectRow,
+  NumberInputRow,
+  NumberIncrementInputRow,
+  TextInputRow,
+  TextRow,
+  CopyRow,
+  FillRow,
+} from "./library.js";
 
 class HH {
   constructor() {
@@ -25,16 +33,22 @@ class HH {
       )),
       (this.subjective = new TextRow("Subjective", "")),
       new TextRow("", ""),
+      (this.objective = new TextRow("Objective", "")),
+      new TextRow("", ""),
       (this.currentInterval = new NumberInputRow("Current Interval", "0", "20", "6", "weeks", onchange)),
       (this.ferritin = new NumberInputRow("Measured Ferritin", "0", "500", "100", "ng/ml", onchange)),
       (this.hgb = new NumberIncrementInputRow("HGB", "0", "30", "0.1", "14", "g/dl", onchange)),
-      (this.objective = new TextRow("Objective", "")),
       (this.assessment = new TextRow("Assessment", "")),
       new TextRow("", ""),
       (this.targetFerritin = new TextRow("Target Ferritin")),
       (this.newInterval = new NumberInputRow("New Interval", "0", "20", "6", "weeks", onchange)),
       (this.next = new SelectRow("Next", ["Continue", "Schedule"], "", onchange)),
       (this.plan = new TextRow("Plan", "")),
+      new TextRow("", ""),
+      (this.reviewer = new TextInputRow("Reviewer", onchange)),
+      (this.reviewed = new TextRow("Reviewed", "")),
+      new TextRow("", ""),
+      (this.copy = new CopyRow("")),
       new FillRow(),
     ]);
     this.compute();
@@ -49,10 +63,10 @@ class HH {
 
     let oldInterval = this.oldInterval.getValue();
     let currentTreatment = this.currentTreatment.getValue();
-    this.subjective.setValue(
+    let subjectiveText =
       `${age}-year-old ${sex} with ${genotype} hereditary hemochromatosis undergoing ${currentTreatment} Q ${oldInterval} weeks.  ` +
-        `Patient denies interval changes including arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last visit.`,
-    );
+      `Patient denies interval changes including arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last visit.`;
+    this.subjective.setValue(subjectiveText);
 
     let currentInterval = this.currentInterval.getValue();
     let targetFerritin = "50-150 ng/ml";
@@ -72,19 +86,33 @@ class HH {
       relative = "above";
     }
     let hgb = this.hgb.getValue();
-    this.assessment.setValue(
-      `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`,
-    );
+    let assessmentText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`;
+    this.assessment.setValue(assessmentText);
 
     let next = this.next.getValue();
     let newInterval = this.newInterval.getValue();
-    this.plan.setValue(
-      `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${newInterval} weeks.`,
+    let planText = `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${newInterval} weeks.`;
+    this.plan.setValue(planText);
+
+    let reviewer = this.reviewer.getValue();
+    let reviewedText = `This case was discussed with ${reviewer}, Chief of Blood Services Section, Department of Transfusion Medicine.`;
+    this.reviewed.setValue(reviewedText);
+
+    this.copy.setValue(
+      `Subjective
+${subjectiveText}
+Objective
+Assessment
+${assessmentText}
+Plan
+${planText}
+
+${reviewedText}`,
     );
   }
   genotypeSelector() {
     let ret = el(".row", [
-      el("span.col1", "Genotype"),
+      el("span.row_label", "Genotype"),
       (this.genotype = el("select", [
         el("option", { value: "C282Y/C282Y" }, "C282Y/C282Y"),
         el("option", { value: "C282Y/H63D" }, "C282Y/H63D"),

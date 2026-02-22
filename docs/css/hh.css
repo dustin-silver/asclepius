@@ -5,7 +5,6 @@
 .hh .row {
     display: table-row;
 }
-.hh .row .col1,
 .hh .row .row_label {
     display: table-cell;
     text-align: right;
@@ -21,4 +20,12 @@
 .hh .row input,
 .hh .row select {
     margin-right: 5px;
+}
+
+.hh .row .copy {
+    cursor: pointer;
+}
+
+.hh .row .copy:hover {
+    background-color: lightgray;
 }
