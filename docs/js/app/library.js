@@ -1,6 +1,7 @@
 import { el } from "redom";
 class SelectRow {
   constructor(label, options, units, onchange) {
+    this.options = options;
     let ops = [];
     for (let i in options) {
       ops.push(el("option", { value: options[i] }, options[i]));
@@ -10,6 +11,11 @@ class SelectRow {
   }
   getValue() {
     return this.selector.value;
+  }
+  setValue(value) {
+    if (this.options.includes(value)) {
+      this.selector.value = value;
+    }
   }
 }
 
@@ -23,6 +29,9 @@ class NumberInputRow {
   }
   getValue() {
     return this.input.value;
+  }
+  setValue(value) {
+    this.input.value = value;
   }
 }
 
@@ -41,6 +50,9 @@ class NumberIncrementInputRow {
   getValue() {
     return this.input.value;
   }
+  setValue(value) {
+    this.input.value = value;
+  }
 }
 
 class TextInputRow {
@@ -50,6 +62,9 @@ class TextInputRow {
   }
   getValue() {
     return this.input.value;
+  }
+  setValue(value) {
+    this.input.value = value;
   }
 }
 

@@ -51,15 +51,13 @@ class HH {
       (this.copy = new CopyRow("")),
       new FillRow(),
     ]);
+    this.loadFromStorage();
     this.compute();
   }
   compute() {
     let age = this.age.getValue();
     let sex = this.sex.getValue();
-    let genotype = this.genotype.value;
-    if (genotype == "o") {
-      genotype = this.genotypeOther;
-    }
+    let genotype = this.getGenotype();
 
     let oldInterval = this.oldInterval.getValue();
     let currentTreatment = this.currentTreatment.getValue();
@@ -109,22 +107,22 @@ ${planText}
 
 ${reviewedText}`,
     );
+    this.saveToStorage();
   }
   genotypeSelector() {
+    let options = ["C282Y/C282Y", "C282Y/H63D", "C282Y/WT", "H63D/H63D", "C282Y/S65C", "other"];
+    this.genotypeOptions = options;
+    let ops = [];
+    for (let i in options) {
+      ops.push(el("option", { value: options[i] }, options[i]));
+    }
     let ret = el(".row", [
       el("span.row_label", "Genotype"),
-      (this.genotype = el("select", [
-        el("option", { value: "C282Y/C282Y" }, "C282Y/C282Y"),
-        el("option", { value: "C282Y/H63D" }, "C282Y/H63D"),
-        el("option", { value: "C282Y/WT" }, "C282Y/WT"),
-        el("option", { value: "H63D/H63D" }, "H63D/H63D"),
-        el("option", { value: "C282Y/S65C" }, "C282Y/S65C"),
-        el("option", { value: "o" }, "other"),
-      ])),
+      (this.genotype = el("select", ops)),
       (this.genotypeOther = el("input.hidden", { type: "text" })),
     ]);
     this.genotypeOther.onchange = this.genotype.onchange = () => {
-      if (this.genotype.value == "o") {
+      if (this.genotype.value == "other") {
         this.genotypeOther.className = "";
       } else {
         this.genotypeOther.className = "hidden";
@@ -132,6 +130,49 @@ ${reviewedText}`,
       this.compute();
     };
     return ret;
+  }
+  setGenotype(value) {
+    if (this.genotypeOptions.includes(value)) {
+      this.genotype.value = value;
+    }
+  }
+  getGenotype() {
+    if (this.genotype.value == "other") {
+      return this.genotypeOther.value;
+    }
+    return this.genotype.value;
+  }
+  loadFromStorage() {
+    let json = JSON.parse(window.localStorage.getItem("asclepius.hh"));
+    if (json) {
+      this.age.setValue(json["age"] || "50");
+      this.sex.setValue(json["sex"] || "Male");
+      this.setGenotype(json["genotype"] || "C282Y/C282Y");
+      this.oldInterval.setValue(json["oldInterval"] || "6");
+      this.currentTreatment.setValue(json["currentTreatment"] || "whole blood allogeneic phlebotomy");
+      this.currentInterval.setValue(json["currentInterval"] || "6");
+      this.ferritin.setValue(json["ferritin"] || "100");
+      this.hgb.setValue(json["hgb"] || "14");
+      this.newInterval.setValue(json["newInterval"] || "6");
+      this.next.setValue(json["next"] || "Continue");
+      this.reviewer.setValue(json["reviewer"] || "");
+    }
+  }
+  saveToStorage() {
+    let json = {
+      age: this.age.getValue(),
+      sex: this.sex.getValue(),
+      genotype: this.getGenotype(),
+      oldInterval: this.oldInterval.getValue(),
+      currentTreatment: this.currentTreatment.getValue(),
+      currentInterval: this.currentInterval.getValue(),
+      ferritin: this.ferritin.getValue(),
+      hgb: this.hgb.getValue(),
+      newInterval: this.newInterval.getValue(),
+      next: this.next.getValue(),
+      reviewer: this.reviewer.getValue(),
+    };
+    window.localStorage.setItem("asclepius.hh", JSON.stringify(json));
   }
 }
 
