@@ -1,7 +1,9 @@
 import { el } from "redom";
 import {
   SelectRow,
+  SelectOtherRow,
   NumberInputRow,
+  NumberDivisionInputRow,
   NumberIncrementInputRow,
   TextInputRow,
   TextRow,
@@ -17,7 +19,11 @@ class HH {
     this.el = el(".hh", [
       (this.age = new NumberInputRow("Age", 0, 120, 50, "", onchange)),
       (this.sex = new SelectRow("Sex", ["man", "woman"], "", onchange)),
-      this.genotypeSelector(),
+      (this.genotype = new SelectOtherRow(
+        "Genotype",
+        ["C282Y/C282Y", "C282Y/H63D", "C282Y/WT", "H63D/H63D", "C282Y/S65C"],
+        onchange,
+      )),
       new TextRow("", ""),
       (this.oldInterval = new NumberInputRow("Old Interval", "0", "20", "6", "weeks", onchange)),
       (this.currentTreatment = new SelectRow(
@@ -35,7 +41,7 @@ class HH {
       new TextRow("", ""),
       (this.objective = new TextRow("Objective", "")),
       new TextRow("", ""),
-      (this.currentInterval = new NumberInputRow("Current Interval", "0", "20", "6", "weeks", onchange)),
+      (this.actualInterval = new NumberDivisionInputRow("Actual Interval", "0", "20", 7, "6", "weeks", onchange)),
       (this.ferritin = new NumberInputRow("Measured Ferritin", "0", "500", "100", "ng/ml", onchange)),
       (this.hgb = new NumberIncrementInputRow("HGB", "0", "30", "0.1", "14", "g/dl", onchange)),
       (this.assessment = new TextRow("Assessment", "")),
@@ -57,16 +63,16 @@ class HH {
   compute() {
     let age = this.age.getValue();
     let sex = this.sex.getValue();
-    let genotype = this.getGenotype();
+    let genotype = this.genotype.getValue();
 
     let oldInterval = this.oldInterval.getValue();
     let currentTreatment = this.currentTreatment.getValue();
     let subjectiveText =
       `${age}-year-old ${sex} with ${genotype} hereditary hemochromatosis undergoing ${currentTreatment} Q ${oldInterval} weeks.  ` +
-      `Patient denies interval changes including arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last visit.`;
+      `Patient denies interval changes such as arthralgia, skin discoloration, abdominal fullness, changes in alcohol intake or diet, fatigue, or hospitalization since last visit.`;
     this.subjective.setValue(subjectiveText);
 
-    let currentInterval = this.currentInterval.getValue();
+    let actualInterval = this.actualInterval.getValue();
     let targetFerritin = "50-150 ng/ml";
     if (genotype == "C282Y/C282Y" && age < 65) {
       targetFerritin = "50-75 ng/ml";
@@ -84,7 +90,7 @@ class HH {
       relative = "above";
     }
     let hgb = this.hgb.getValue();
-    let assessmentText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${currentInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`;
+    let assessmentText = `${age}-year-old ${sex} with ${genotype} HFE hereditary hemochromatosis, who presents ${actualInterval} weeks since last phlebotomy with a ferritin ${relative} target range at ${ferritin} ng/ml and hgb at ${hgb} g/dl.`;
     this.assessment.setValue(assessmentText);
 
     let next = this.next.getValue();
@@ -109,48 +115,15 @@ ${reviewedText}`,
     );
     this.saveToStorage();
   }
-  genotypeSelector() {
-    let options = ["C282Y/C282Y", "C282Y/H63D", "C282Y/WT", "H63D/H63D", "C282Y/S65C", "other"];
-    this.genotypeOptions = options;
-    let ops = [];
-    for (let i in options) {
-      ops.push(el("option", { value: options[i] }, options[i]));
-    }
-    let ret = el(".row", [
-      el("span.row_label", "Genotype"),
-      (this.genotype = el("select", ops)),
-      (this.genotypeOther = el("input.hidden", { type: "text" })),
-    ]);
-    this.genotypeOther.onchange = this.genotype.onchange = () => {
-      if (this.genotype.value == "other") {
-        this.genotypeOther.className = "";
-      } else {
-        this.genotypeOther.className = "hidden";
-      }
-      this.compute();
-    };
-    return ret;
-  }
-  setGenotype(value) {
-    if (this.genotypeOptions.includes(value)) {
-      this.genotype.value = value;
-    }
-  }
-  getGenotype() {
-    if (this.genotype.value == "other") {
-      return this.genotypeOther.value;
-    }
-    return this.genotype.value;
-  }
   loadFromStorage() {
     let json = JSON.parse(window.localStorage.getItem("asclepius.hh"));
     if (json) {
       this.age.setValue(json["age"] || "50");
       this.sex.setValue(json["sex"] || "Male");
-      this.setGenotype(json["genotype"] || "C282Y/C282Y");
+      this.genotype.setValue(json["genotype"] || "C282Y/C282Y");
       this.oldInterval.setValue(json["oldInterval"] || "6");
       this.currentTreatment.setValue(json["currentTreatment"] || "whole blood allogeneic phlebotomy");
-      this.currentInterval.setValue(json["currentInterval"] || "6");
+      this.actualInterval.setValue(json["actualInterval"] || "6");
       this.ferritin.setValue(json["ferritin"] || "100");
       this.hgb.setValue(json["hgb"] || "14");
       this.newInterval.setValue(json["newInterval"] || "6");
@@ -162,10 +135,10 @@ ${reviewedText}`,
     let json = {
       age: this.age.getValue(),
       sex: this.sex.getValue(),
-      genotype: this.getGenotype(),
+      genotype: this.genotype.getValue(),
       oldInterval: this.oldInterval.getValue(),
       currentTreatment: this.currentTreatment.getValue(),
-      currentInterval: this.currentInterval.getValue(),
+      actualInterval: this.actualInterval.getValue(),
       ferritin: this.ferritin.getValue(),
       hgb: this.hgb.getValue(),
       newInterval: this.newInterval.getValue(),

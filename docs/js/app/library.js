@@ -19,6 +19,48 @@ class SelectRow {
   }
 }
 
+class SelectOtherRow {
+  constructor(label, options, onchange) {
+    this.options = options;
+    let ops = [];
+    for (let i in options) {
+      ops.push(el("option", { value: options[i] }, options[i]));
+    }
+    ops.push(el("option", { value: "other" }, "other"));
+    this.el = el(".row", [
+      el("span.row_label", label),
+      el("span", [(this.selector = el("select", ops)), (this.other = el("input.hidden", { type: "text" }))]),
+    ]);
+    this.other.onchange = onchange;
+    this.selector.onchange = () => {
+      this.setVisible();
+      onchange();
+    };
+  }
+  setVisible() {
+    if (this.selector.value == "other") {
+      this.other.className = "";
+    } else {
+      this.other.className = "hidden";
+    }
+  }
+  getValue() {
+    if (this.selector.value == "other") {
+      return this.other.value;
+    }
+    return this.selector.value;
+  }
+  setValue(value) {
+    if (this.options.includes(value)) {
+      this.selector.value = value;
+    } else {
+      this.selector.value = "other";
+      this.other.value = value;
+    }
+    this.setVisible();
+  }
+}
+
 class NumberInputRow {
   constructor(label, min, max, value, units, onchange) {
     this.el = el(".row", [
@@ -32,6 +74,39 @@ class NumberInputRow {
   }
   setValue(value) {
     this.input.value = value;
+  }
+}
+
+class NumberDivisionInputRow {
+  static regex = /(\d+)( (\d+)\/\d+)?/;
+  constructor(label, min, max, division, value, units, onchange) {
+    this.division = division;
+    this.el = el(".row", [
+      el("span.row_label", label),
+      el(
+        "label.units",
+        [
+          (this.input = el("input", { type: "number", min: min, max: max, value: value })),
+          (this.divInput = el("input", { type: "number", min: 0, max: division - 1, value: 0 })),
+        ],
+        `/${division} ${units}`,
+      ),
+    ]);
+    this.input.onchange = onchange;
+    this.divInput.onchange = onchange;
+  }
+  getValue() {
+    if (this.divInput.value == 0) {
+      return this.input.value;
+    }
+    return `${this.input.value} ${this.divInput.value}/${this.division}`;
+  }
+  setValue(value) {
+    let match = value.match(NumberDivisionInputRow.regex);
+    this.input.value = match[1];
+    if (match[3]) {
+      this.divInput.value = match[3];
+    }
   }
 }
 
@@ -98,4 +173,14 @@ class FillRow {
   }
 }
 
-export { SelectRow, NumberInputRow, NumberIncrementInputRow, TextInputRow, TextRow, CopyRow, FillRow };
+export {
+  SelectRow,
+  SelectOtherRow,
+  NumberInputRow,
+  NumberDivisionInputRow,
+  NumberIncrementInputRow,
+  TextInputRow,
+  TextRow,
+  CopyRow,
+  FillRow,
+};
