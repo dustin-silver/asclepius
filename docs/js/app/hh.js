@@ -94,12 +94,16 @@ class HH {
     this.assessment.setValue(assessmentText);
 
     let next = this.next.getValue();
+    let next2 = "of";
+    if (next == "Schedule") {
+      next2 = "for";
+    }
     let newInterval = this.newInterval.getValue();
-    let planText = `Target ferritin ${targetFerritin} ng/dl.  ${next} phlebotomy interval of Q ${newInterval} weeks.`;
+    let planText = `Target ferritin ${targetFerritin}.  ${next} phlebotomy interval ${next2} Q ${newInterval} weeks.`;
     this.plan.setValue(planText);
 
     let reviewer = this.reviewer.getValue();
-    let reviewedText = `This case was discussed with ${reviewer}, Chief of Blood Services Section, Department of Transfusion Medicine.`;
+    let reviewedText = `This case was discussed with ${reviewer}, Department of Transfusion Medicine.`;
     this.reviewed.setValue(reviewedText);
 
     this.copy.setValue(
