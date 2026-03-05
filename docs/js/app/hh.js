@@ -1,14 +1,13 @@
 import { el } from "redom";
 import {
-  SelectRow,
-  SelectOtherRow,
-  NumberInputRow,
-  NumberDivisionInputRow,
-  NumberIncrementInputRow,
-  TextInputRow,
-  TextRow,
   CopyRow,
   FillRow,
+  NumberDivisionInputRow,
+  NumberIncrementInputRow,
+  NumberInputRow,
+  SelectRow,
+  TextInputRow,
+  TextRow,
 } from "./library.js";
 
 class HH {
@@ -18,25 +17,25 @@ class HH {
     };
     this.el = el(".hh", [
       (this.age = new NumberInputRow("Age", 0, 120, 50, "", onchange)),
-      (this.sex = new SelectRow("Sex", ["man", "woman"], "", onchange)),
-      (this.genotype = new SelectOtherRow(
-        "Genotype",
-        ["C282Y/C282Y", "C282Y/H63D", "C282Y/WT", "H63D/H63D", "C282Y/S65C"],
-        onchange,
-      )),
+      (this.sex = new SelectRow({ label: "Sex", options: ["man", "woman"], onchange: onchange })),
+      (this.genotype = new SelectRow({
+        label: "Genotype",
+        options: ["C282Y/C282Y", "C282Y/H63D", "C282Y/WT", "H63D/H63D", "C282Y/S65C"],
+        other: true,
+        onchange: onchange,
+      })),
       new TextRow("", ""),
       (this.oldInterval = new NumberInputRow("Old Interval", "0", "20", "6", "weeks", onchange)),
-      (this.currentTreatment = new SelectRow(
-        "Current Treatment",
-        [
+      (this.currentTreatment = new SelectRow({
+        label: "Current Treatment",
+        options: [
           "whole blood allogeneic phlebotomy",
           "whole blood therapeutic phlebotomy",
           "whole blood research phlebotomy",
           "double red cell apheresis (DRCA)",
         ],
-        "",
-        onchange,
-      )),
+        onchange: onchange,
+      })),
       (this.subjective = new TextRow("Subjective", "")),
       new TextRow("", ""),
       (this.objective = new TextRow("Objective", "")),
@@ -48,7 +47,7 @@ class HH {
       new TextRow("", ""),
       (this.targetFerritin = new TextRow("Target Ferritin")),
       (this.newInterval = new NumberInputRow("New Interval", "0", "20", "6", "weeks", onchange)),
-      (this.next = new SelectRow("Next", ["Continue", "Schedule"], "", onchange)),
+      (this.next = new SelectRow({ label: "Next", options: ["Continue", "Schedule"], onchange: onchange })),
       (this.plan = new TextRow("Plan", "")),
       new TextRow("", ""),
       (this.reviewer = new TextInputRow("Reviewer", onchange)),

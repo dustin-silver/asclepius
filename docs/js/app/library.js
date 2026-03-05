@@ -1,51 +1,44 @@
 import { el } from "redom";
 class SelectRow {
-  constructor(label, options, units, onchange) {
-    this.options = options;
+  constructor(args) {
+    this.options = args.options || [];
+    this.label = args.label || "";
+    this.units = args.units || "";
     let ops = [];
-    for (let i in options) {
-      ops.push(el("option", { value: options[i] }, options[i]));
+    for (let i in this.options) {
+      ops.push(el("option", { value: this.options[i] }, this.options[i]));
     }
-    this.el = el(".row", [el("span.row_label", label), el("label.units", (this.selector = el("select", ops)), units)]);
-    this.selector.onchange = onchange;
-  }
-  getValue() {
-    return this.selector.value;
-  }
-  setValue(value) {
-    if (this.options.includes(value)) {
-      this.selector.value = value;
+    if (args.other) {
+      ops.push(el("option", { value: "option_other" }, "other"));
     }
-  }
-}
-
-class SelectOtherRow {
-  constructor(label, options, onchange) {
-    this.options = options;
-    let ops = [];
-    for (let i in options) {
-      ops.push(el("option", { value: options[i] }, options[i]));
+    let children = [(this.selector = el("select", ops))];
+    if (args.other) {
+      children.push((this.other = el("input.hidden", { type: "text" })));
     }
-    ops.push(el("option", { value: "other" }, "other"));
-    this.el = el(".row", [
-      el("span.row_label", label),
-      el("span", [(this.selector = el("select", ops)), (this.other = el("input.hidden", { type: "text" }))]),
-    ]);
-    this.other.onchange = onchange;
-    this.selector.onchange = () => {
-      this.setVisible();
-      onchange();
-    };
+    this.el = el(".row", [el("span.row_label", this.label), el("span", children, this.units)]);
+    if (typeof args.onchange == "function") {
+      if (args.other) {
+        this.other.onchange = args.onchange;
+        this.selector.onchange = () => {
+          this.setVisible();
+          args.onchange();
+        };
+      } else {
+        this.selector.onchange = args.onchange;
+      }
+    }
   }
   setVisible() {
-    if (this.selector.value == "other") {
-      this.other.className = "";
-    } else {
-      this.other.className = "hidden";
+    if (this.other) {
+      if (this.selector.value == "option_other") {
+        this.other.className = "";
+      } else {
+        this.other.className = "hidden";
+      }
     }
   }
   getValue() {
-    if (this.selector.value == "other") {
+    if (this.selector.value == "option_other") {
       return this.other.value;
     }
     return this.selector.value;
@@ -53,11 +46,11 @@ class SelectOtherRow {
   setValue(value) {
     if (this.options.includes(value)) {
       this.selector.value = value;
-    } else {
-      this.selector.value = "other";
+    } else if (this.other) {
+      this.selector.value = "option_other";
       this.other.value = value;
+      this.setVisible();
     }
-    this.setVisible();
   }
 }
 
@@ -175,7 +168,6 @@ class FillRow {
 
 export {
   SelectRow,
-  SelectOtherRow,
   NumberInputRow,
   NumberDivisionInputRow,
   NumberIncrementInputRow,
