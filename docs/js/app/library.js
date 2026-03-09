@@ -1,4 +1,12 @@
 import { el } from "redom";
+class Row {
+  constructor(label, children) {
+    if (Array.isArray(children)) {
+      children = el("span", children);
+    }
+    this.el = el(".row", [el("span.row_label", label), children]);
+  }
+}
 class SelectRow {
   constructor(args) {
     this.options = args.options || [];
@@ -54,12 +62,13 @@ class SelectRow {
   }
 }
 
-class NumberInputRow {
-  constructor(label, min, max, value, units, onchange) {
-    this.el = el(".row", [
-      el("span.row_label", label),
-      el("label.units", (this.input = el("input", { type: "number", min: min, max: max, value: value })), units),
-    ]);
+class NumberInput {
+  constructor(min, max, value, units, onchange) {
+    this.el = el(
+      "label.units",
+      (this.input = el("input", { type: "number", min: min, max: max, value: value })),
+      units,
+    );
     this.input.onchange = onchange;
   }
   getValue() {
@@ -167,8 +176,9 @@ class FillRow {
 }
 
 export {
+  Row,
   SelectRow,
-  NumberInputRow,
+  NumberInput,
   NumberDivisionInputRow,
   NumberIncrementInputRow,
   TextInputRow,

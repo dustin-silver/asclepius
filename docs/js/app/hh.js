@@ -1,10 +1,11 @@
 import { el } from "redom";
 import {
+  Row,
   CopyRow,
   FillRow,
   NumberDivisionInputRow,
   NumberIncrementInputRow,
-  NumberInputRow,
+  NumberInput,
   SelectRow,
   TextInputRow,
   TextRow,
@@ -16,7 +17,7 @@ class HH {
       this.compute();
     };
     this.el = el(".hh", [
-      (this.age = new NumberInputRow("Age", 0, 120, 50, "", onchange)),
+      new Row("Age", (this.age = new NumberInput(0, 120, 50, "", onchange))),
       (this.sex = new SelectRow({ label: "Sex", options: ["man", "woman"], onchange: onchange })),
       (this.genotype = new SelectRow({
         label: "Genotype",
@@ -25,7 +26,7 @@ class HH {
         onchange: onchange,
       })),
       new TextRow("", ""),
-      (this.oldInterval = new NumberInputRow("Old Interval", "0", "20", "6", "weeks", onchange)),
+      new Row("Old Interval", (this.oldInterval = new NumberInput("0", "20", "6", "weeks", onchange))),
       (this.currentTreatment = new SelectRow({
         label: "Current Treatment",
         options: [
@@ -41,12 +42,12 @@ class HH {
       (this.objective = new TextRow("Objective", "")),
       new TextRow("", ""),
       (this.actualInterval = new NumberDivisionInputRow("Actual Interval", "0", "20", 7, "6", "weeks", onchange)),
-      (this.ferritin = new NumberInputRow("Measured Ferritin", "0", "500", "100", "ng/ml", onchange)),
+      new Row("Measured Ferritin", (this.ferritin = new NumberInput("0", "500", "100", "ng/ml", onchange))),
       (this.hgb = new NumberIncrementInputRow("HGB", "0", "30", "0.1", "14", "g/dl", onchange)),
       (this.assessment = new TextRow("Assessment", "")),
       new TextRow("", ""),
       (this.targetFerritin = new TextRow("Target Ferritin")),
-      (this.newInterval = new NumberInputRow("New Interval", "0", "20", "6", "weeks", onchange)),
+      new Row("New Interval", (this.newInterval = new NumberInput("0", "20", "6", "weeks", onchange))),
       (this.next = new SelectRow({ label: "Next", options: ["Continue", "Schedule"], onchange: onchange })),
       (this.plan = new TextRow("Plan", "")),
       new TextRow("", ""),
