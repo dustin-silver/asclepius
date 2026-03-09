@@ -7,7 +7,7 @@ class Row {
     this.el = el(".row", [el("span.row_label", label), children]);
   }
 }
-class SelectRow {
+class Select {
   constructor(args) {
     this.options = args.options || [];
     this.label = args.label || "";
@@ -23,7 +23,7 @@ class SelectRow {
     if (args.other) {
       children.push((this.other = el("input.hidden", { type: "text" })));
     }
-    this.el = el(".row", [el("span.row_label", this.label), el("span", children, this.units)]);
+    this.el = el("span", children, this.units);
     if (typeof args.onchange == "function") {
       if (args.other) {
         this.other.onchange = args.onchange;
@@ -79,21 +79,18 @@ class NumberInput {
   }
 }
 
-class NumberDivisionInputRow {
+class NumberDivisionInput {
   static regex = /(\d+)( (\d+)\/\d+)?/;
-  constructor(label, min, max, division, value, units, onchange) {
+  constructor(min, max, division, value, units, onchange) {
     this.division = division;
-    this.el = el(".row", [
-      el("span.row_label", label),
-      el(
-        "label.units",
-        [
-          (this.input = el("input", { type: "number", min: min, max: max, value: value })),
-          (this.divInput = el("input", { type: "number", min: 0, max: division - 1, value: 0 })),
-        ],
-        `/${division} ${units}`,
-      ),
-    ]);
+    this.el = el(
+      "label.units",
+      [
+        (this.input = el("input", { type: "number", min: min, max: max, value: value })),
+        (this.divInput = el("input", { type: "number", min: 0, max: division - 1, value: 0 })),
+      ],
+      `/${division} ${units}`,
+    );
     this.input.onchange = onchange;
     this.divInput.onchange = onchange;
   }
@@ -104,7 +101,7 @@ class NumberDivisionInputRow {
     return `${this.input.value} ${this.divInput.value}/${this.division}`;
   }
   setValue(value) {
-    let match = value.match(NumberDivisionInputRow.regex);
+    let match = value.match(NumberDivisionInput.regex);
     this.input.value = match[1];
     if (match[3]) {
       this.divInput.value = match[3];
@@ -112,16 +109,13 @@ class NumberDivisionInputRow {
   }
 }
 
-class NumberIncrementInputRow {
-  constructor(label, min, max, increment, value, units, onchange) {
-    this.el = el(".row", [
-      el("span.row_label", label),
-      el(
-        "label.units",
-        (this.input = el("input", { type: "number", min: min, max: max, step: increment, value: value })),
-        units,
-      ),
-    ]);
+class NumberIncrementInput {
+  constructor(min, max, increment, value, units, onchange) {
+    this.el = el(
+      "label.units",
+      (this.input = el("input", { type: "number", min: min, max: max, step: increment, value: value })),
+      units,
+    );
     this.input.onchange = onchange;
   }
   getValue() {
@@ -132,9 +126,9 @@ class NumberIncrementInputRow {
   }
 }
 
-class TextInputRow {
-  constructor(label, onchange) {
-    this.el = el(".row", [el("span.row_label", label), (this.input = el("input"))]);
+class TextInput {
+  constructor(onchange) {
+    this.el = this.input = el("input");
     this.input.onchange = onchange;
   }
   getValue() {
@@ -145,9 +139,9 @@ class TextInputRow {
   }
 }
 
-class TextRow {
-  constructor(label, text) {
-    this.el = el(".row", [el("span.row_label", label), (this.text = el("span", text))]);
+class Text {
+  constructor(text) {
+    this.el = this.text = el("span", text);
   }
   setValue(text) {
     this.text.innerText = text;
@@ -159,9 +153,9 @@ async function copyToClipboard(text) {
   await navigator.clipboard.write([ci]);
 }
 
-class CopyRow {
+class Copy {
   constructor(text) {
-    this.el = el(".row", [el("span.row_label", "Copy"), (this.text = el("span.copy", text))]);
+    this.el = this.text = el("span.copy", text);
     this.text.onclick = () => copyToClipboard(this.text.innerText);
   }
   setValue(text) {
@@ -169,20 +163,10 @@ class CopyRow {
   }
 }
 
-class FillRow {
+class Fill {
   constructor() {
-    this.el = el(".row", [el("span.row_label", ""), el("span.fill", "")]);
+    this.el = el("span.fill", "");
   }
 }
 
-export {
-  Row,
-  SelectRow,
-  NumberInput,
-  NumberDivisionInputRow,
-  NumberIncrementInputRow,
-  TextInputRow,
-  TextRow,
-  CopyRow,
-  FillRow,
-};
+export { Row, Select, NumberInput, NumberDivisionInput, NumberIncrementInput, TextInput, Text, Copy, Fill };
